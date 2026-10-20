@@ -1,0 +1,116 @@
+### Randomization tests for causal inference in randomized experiments
+
+##analysis of Darwin data
+
+#this is a matched pairs experiment
+#let's create two ordered vectors with the data from each pot
+crossed = c(23.5, 12, 21, 22, 19.125, 21.5, 22.125, 20.375, 18.25, 21.625, 23.25, 21, 22.125, 23,12)
+self = c(17.375, 20.375, 20, 20, 18.375, 18.625, 18.625, 15.25, 16.5, 18, 16.25, 18, 12.75, 15.5, 18)
+
+#create vector of differences in the observed data
+crossminusself = crossed - self
+mean(crossminusself)
+
+hist(crossminusself, xlab = "Differences (cross - self)", main = "Growth differences for plant pairs in Darwin data")
+
+#let's examine some possible alternative randomizations
+#suppose we had changed the treatment assignment of each plant within the first pot
+#under the Fisher sharp null, there is no effect of the fertilization type, 
+#so each plant's growth is the same regardless of its treatment
+
+#so, instead of 23.5 for the cross-fertilized plant and 17.375 for the self-fertilized plant
+#we would have 17.375 for the cross-fertilized plant and 23.5 for the self-fertilized plant
+
+#with this alternate randomization, we would have data of
+
+crossed1 = c(17.375, 12, 21, 22, 19.125, 21.5, 22.125, 20.375, 18.25, 21.625, 23.25, 21, 22.125, 23,12)
+self1 = c(23.5, 20.375, 20, 20, 18.375, 18.625, 18.625, 15.25, 16.5, 18, 16.25, 18, 12.75, 15.5, 18)
+
+crossminusself1 =  crossed1 - self1
+mean(crossminusself1)
+
+#we can repeat this for any and every possible random assignment
+#if we do so, the resulting collection of averages of differences is the randomization distribution for this statistic
+  
+#let's write a program to approximate the randomization distribution
+
+#make a generic program so we only need to replace the differences variable as "x"
+x = crossminusself
+n = length(x)
+S = 10000
+trteffct = rep(0, S)
+
+for(k in 1:S){
+#create a randomly drawn allocation
+samp = rbinom(n, 1, 0.5)*2 - 1 
+
+#this creates -1 and 1 for all n elements of the vector
+#we can multiply the -1 and +1 values by the entries in the observed data 
+#to compute the treatment effect in that sample
+
+trteffct[k] = mean(x*samp)
+}
+
+#make a histogram of the randomization distribution, and plot observed mean on it
+hist(trteffct, xlab = "Treatment effects", main = "Randomization distribution of treatment effect for Darwin data")
+abline(v=mean(crossminusself))
+
+#determine percentage of assignments with values as or more extreme than what was observed
+sum(trteffct >= mean(crossminusself)) 
+
+#this is a smallish probability, so we reject the null hypothesis.
+#it appears from Darwin's data that cross-fertilization causes these plants to grow taller than does self-fertilization
+
+
+## Analysis of Pygmalion data
+
+#input data manually, since only twelve data points
+none = c(3, 2, 6, 10, 11, 5)
+accel = c(20, 10, 19, 15, 9, 18)
+scores = c(none, accel)
+condition = c(rep(0, 6), rep(1, 6))
+
+#plot of data -- no need for histograms given small sample size
+plot(y = scores, x = condition, xlab = "Treatment group (0 = none, 1 = accelerated)", ylab = "Changes in IQ", main = "IQ changes in both groups")
+
+#let's get mean of each group and difference in means
+trtmeanpyg = mean(scores[condition==1])
+contrmeanpyg = mean(scores[condition==0])
+diffpyg = trtmeanpyg - contrmeanpyg
+
+#let's do a Fisher randomization test
+
+#program to approximate the randomization test
+#make generic so we only need to replace the differences variable as "x"
+
+x = scores
+trt = condition
+S = 10000
+trteffct = rep(0, S)
+
+for(k in 1:S){
+#create a randomly drawn allocation
+samp = sample(trt)
+
+#this permutes the treatment indicators, which is exactly what we want to do
+#now we just take the mean of each group in the new assignment
+
+trteffct[k] = mean(x[samp==1]) - mean(x[samp==0])
+}
+
+#make a histogram of the randomization distribution, and plot observed mean on it
+hist(trteffct, xlab = "Treatment effects", main = "Randomization distribution of treatment effect for Pygmalion data")
+abline(v=diffpyg)
+
+#determine percentage of assignments with values as or more extreme than what was observed
+sum(trteffct >= diffpyg) 
+
+#this is a smallish probability, so we reject the null hypothesis.
+#it appears from the Pygmalion data that children who were labeled as accelerated 
+#have higher growth than children who are not labeled accelerated
+
+
+#just for comparison, we can get the p-value and 95% confidence interval for Neyman methods
+t.test(scores ~ condition, conf.level = .95)
+
+#differences arise due to small sample sizes.

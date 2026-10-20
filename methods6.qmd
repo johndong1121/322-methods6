@@ -1,0 +1,52 @@
+---
+title: Methods 6
+author: John Dong
+format: pdf
+---
+
+# 1. 
+
+a.
+
+> We have $n_1 = 2$ individuals, indexed as 1 and 2, assigned to treatment, and $n_0 = 2$ individuals, indexed as 3 and 4, assigned to control. The table gives us the observed values $Y_i(1)$ and $Y_i(0)$, but there are question marks for $Y_1(0)$, $Y_2(0)$, $Y_3(1)$, and $Y_4(1)$. This is because the we cannot observe the individual's value with treatment and without treatment simutaneously, so each individual can only have *either* a control value or treatment value. Therefore, for every individual, they will have one value and another value missing, depending on their assignment. Since individuals 1 and 2 are the treatment group, they have no control value $Y_i(0)$, and individuals 3 and 4, assigned control, do not have a $Y_i(1)$.
+
+b.
+
+> Fisher sharp null hypothesis assumes that there are no differences between the values in the treatment groups. Therefore, if we have an individual's value for with/without treatment, we assume that the other is equal such that $Y_i(1) = Y_i(0)$. Therefore, we have
+
+$$
+Y_1(0) = Y_1(1) = \boxed{4} \qquad Y_2(0) = Y_2(1) = \boxed{8} \qquad Y_3(1) = Y_3(0) = \boxed{3} \qquad Y_4(1) = Y_4(0) = \boxed{7} 
+$$
+
+
+{{<pagebreak>}}
+
+c. 
+
+> Under the Fisher sharp null hypothesis, we have:
+
+|Individual | $Y_i(1)$ | $Y_i(0)$|
+|-----------|----------|---------|
+|1 | 4 | 4|
+|2 | 8 | 8|
+|3 | 3 | 3|
+|7 | 7 | 7|
+
+> Among four individuals, we have $\binom{4}{2}$ groups of size 2 among them, meaning there are $\binom{4}{2} = 6$ different possible assignments of treatment and control groups of sizes $n_1 = 2$ and $n_0 = 2$ respectively. To get each possible assignment, we can (1) get every possible group of 2, (2) assign those two individuals to the treatment group, (3) assign remaining individuals to the control group, and (4) compute averages and differences.
+
+|$i \in Treatment$ |$y_i(1)$ |$y_i(0)$| $\bar{y}_1$ | $\bar{y}_0$ | $\bar{y}_1$ - $\bar{y}_0$|
+|-----------------|--------|--------|-------------|-------------|-------------|
+| (1, 2) | (4, 8) | (3, 7) | $\frac{4 + 8}{2} = 6$ | $\frac{3+7}{2} = 5$ | $6-5=1$ |
+| (1, 3) | (4, 3) | (8, 7) | $\frac{4 + 3}{2} = 3.5$ | $\frac{8 + 7}{2} = 7.5$ | $3.5 - 7.5 = -4$ |
+| (1, 4) | (4, 7) | (8, 3) | $\frac{4 + 7}{2} = 5.5$ | $\frac{8 + 3}{2} = 5.5$ | $5.5 - 5.5 = 0$ |
+| (2, 3) | (8, 3) | (4, 7)| $\frac{8 + 3}{2} = 5.5$ | $\frac{4 + 7}{2} = 5.5$ | $5.5 - 5.5 = 0$|
+| (2, 4) | (8, 7) | (4, 3) | $\frac{8 + 7}{2} = 7.5$ |$\frac{4 + 3}{2} = 3.5$ | $7.5 - 3.5 = 4$ |
+| (3, 4) | (3, 7) | (4, 8) |  $\frac{3+7}{2} = 5$ |$\frac{4 + 8}{2} = 6$ | $5 - 6 = -1$ |
+
+d. 
+
+> Each row represents an assignment, with equal probability $\frac{1}{\binom{4}{2}} = \frac{1}{6}$. 
+>
+>$\Rightarrow \quad \mathbb{P}(\{\bar{y}_1 - \bar{y}_0 = x\}) = \begin{cases} \frac{1}{6}, & x = -4 \\ \frac{1}{6}, & x = -1 \\ \frac{1}{3}, & x = 0 \\ \frac{1}{6}, & x = 1 \\ \frac{1}{6}, & x = 4 \end{cases} \quad \Rightarrow \quad \mathbb{P}(\bar{y}_1 - \bar{y}_0 \geq 1) = \frac{1}{6} + \frac{1}{6} = \frac{1}{3}$
+>
+>*Thus, the Fisher randomization test gives us a p-value of* $\frac{1}{3}$
